@@ -245,6 +245,10 @@ enum {
 #define KB_ACCENT3_FLAG       __allegro_KB_ACCENT3_FLAG
 #define KB_ACCENT4_FLAG       __allegro_KB_ACCENT4_FLAG
 
+/* FIXME copied from alcompat.h, is this still valid? */
+#define KB_NORMAL       1
+#define KB_EXTENDED     2
+
 #define KEY_A                 __allegro_KEY_A
 #define KEY_B                 __allegro_KEY_B
 #define KEY_C                 __allegro_KEY_C
