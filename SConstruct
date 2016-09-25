@@ -66,7 +66,7 @@ class Cache:
         if self.allegro_libs is None:
             self.allegro_libs = ["allegro", "allegro_primitives",
 		"allegro_image", "allegro_font", "allegro_audio",
-		"allegro_acodec"]
+		"allegro_acodec", "allegro_color"]
 
             tests = {
                 "CheckPKGConfig": CheckPKGConfig,

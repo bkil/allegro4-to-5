@@ -3,6 +3,7 @@
 #include "allegro.h"
 
 #include "include/internal/aintern.h"
+#include "allegro5/allegro_color.h"
 
 int _rgb_r_shift_15 = DEFAULT_RGB_R_SHIFT_15;     /* truecolor pixel format */
 int _rgb_g_shift_15 = DEFAULT_RGB_G_SHIFT_15;
@@ -367,4 +368,12 @@ void fade_out(int speed){
     al_restore_state(&state);
 
     al_destroy_bitmap(copy);
+}
+
+void hsv_to_rgb(float h, float s, float v, int *r, int *g, int *b){
+  float fr, fg, fb;
+  al_color_hsv_to_rgb(h, s, v, &fr, &fg, &fb);
+  *r = fr * 255.0;
+  *g = fg * 255.0;
+  *b = fb * 255.0;
 }
