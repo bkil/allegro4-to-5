@@ -31,6 +31,36 @@ static void unload_midi(MIDI *m);
 static void initialise_datafile(DATAFILE *data);
 
 
+/* endian-independent 3-byte accessor macros */
+#ifdef ALLEGRO_LITTLE_ENDIAN
+
+   #define READ3BYTES(p)  ((*(unsigned char *)(p))               \
+                           | (*((unsigned char *)(p) + 1) << 8)  \
+                           | (*((unsigned char *)(p) + 2) << 16))
+
+   #define WRITE3BYTES(p,c)  ((*(unsigned char *)(p) = (c)),             \
+                              (*((unsigned char *)(p) + 1) = (c) >> 8),  \
+                              (*((unsigned char *)(p) + 2) = (c) >> 16))
+
+#elif defined ALLEGRO_BIG_ENDIAN
+
+   #define READ3BYTES(p)  ((*(unsigned char *)(p) << 16)         \
+                           | (*((unsigned char *)(p) + 1) << 8)  \
+                           | (*((unsigned char *)(p) + 2)))
+
+   #define WRITE3BYTES(p,c)  ((*(unsigned char *)(p) = (c) >> 16),       \
+                              (*((unsigned char *)(p) + 1) = (c) >> 8),  \
+                              (*((unsigned char *)(p) + 2) = (c)))
+
+#elif defined SCAN_DEPEND
+
+   #define READ3BYTES(p)
+   #define WRITE3BYTES(p,c)
+
+#else
+   #error endianess not defined
+#endif
+
 
 /* hack to let the grabber prevent compiled sprites from being compiled */
 int _compile_sprites = TRUE;
