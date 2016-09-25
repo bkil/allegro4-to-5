@@ -60,7 +60,7 @@ class Cache:
     def __init__(self):
         self.allegro_libs = None
 
-    def get_env(self):
+    def get_env_common(self):
         env = defaultEnvironment()
 
         if self.allegro_libs is None:
@@ -76,6 +76,17 @@ class Cache:
                 if conf.CheckPKG(allegro_libname("allegro_monolith")):
                    self.allegro_libs = ["allegro_monolith"]
             env = conf.Finish()
+        return env
+
+    def get_cppflags(self):
+        env = self.get_env_common()
+        options = " --cflags"
+        env.ParseConfig("pkg-config " + " ".join([allegro_libname(l)
+            for l in self.allegro_libs]) + options)
+        return env
+
+    def get_env(self):
+        env = self.get_cppflags()
 
         options = " --libs"
         if static:
@@ -100,7 +111,7 @@ def allegroLibrary():
     # Return the cached version
     if allegro_store[0] != None:
         return allegro_store[0]
-    env = defaultEnvironment()
+    env = cache.get_cppflags()
     library = SConscript('allegro4/SConscript', variant_dir = 'build/allegro', exports = ['env'], duplicate = False)
     Alias('library', library)
     #build = 'build-allegro'
