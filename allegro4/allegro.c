@@ -1900,3 +1900,45 @@ void arc(BITMAP * buffer, int x, int y, fixed ang1, fixed ang2, int r, int color
     draw_into(buffer);
     al_draw_arc(x, y, r, fixangle_to_radians(ang1), fixangle_to_radians(ang2), a5color(color, current_depth), 1);
 }
+
+#define MAX_POLYGON_VERTICES	 6
+
+/* emulate polygon() for convex polygons only */
+void polygon(BITMAP * bmp, int vertices, AL_CONST int *points, int a4_color)
+{
+   ALLEGRO_VERTEX vtxs[MAX_POLYGON_VERTICES + 2];
+   int i;
+
+   assert(vertices <= MAX_POLYGON_VERTICES);
+   draw_into(bmp);
+   ALLEGRO_COLOR color = a5color(a4_color, current_depth);
+
+   vtxs[0].x = 0.0;
+   vtxs[0].y = 0.0;
+   vtxs[0].z = 0.0;
+   vtxs[0].color = color;
+   vtxs[0].u = 0;
+   vtxs[0].v = 0;
+
+   for (i = 0; i < vertices; i++) {
+      vtxs[0].x += points[i*2];
+      vtxs[0].y += points[i*2 + 1];
+   }
+
+   vtxs[0].x /= vertices;
+   vtxs[0].y /= vertices;
+
+   for (i = 1; i <= vertices; i++) {
+      vtxs[i].x = points[0];
+      vtxs[i].y = points[1];
+      vtxs[i].z = 0.0;
+      vtxs[i].color = color;
+      vtxs[i].u = 0;
+      vtxs[i].v = 0;
+      points += 2;
+   }
+
+   vtxs[vertices + 1] = vtxs[1];
+
+   al_draw_prim(vtxs, NULL, NULL, 0, vertices + 2, ALLEGRO_PRIM_TRIANGLE_FAN);
+}
